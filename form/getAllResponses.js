@@ -4,7 +4,6 @@ function getAllResponses(){
  // フォームの回答を全て取得する
  let formResponses = form.getResponses();
 
-
  // 全ての回答について順次処理を行う
  for (let i = 0; i < formResponses.length; i++) {
    let formResponse = formResponses[i];                  // i番目の回答を取得する
@@ -17,7 +16,6 @@ function getAllResponses(){
      let itemResponse = itemResponses[j];                // j番目の質問項目を取得する
      let entryTitle = itemResponse.getItem().getTitle(); // 質問のタイトルを取得
      let entryResponse = itemResponse.getResponse();     // 質問の回答を取得
-
 
      // 出力用のテキストを順次追記しながら作成する。
      textResponses = textResponses + '質問「' + entryTitle + '」に「' + entryResponse + '」と回答しました\n'
