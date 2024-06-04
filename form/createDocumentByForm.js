@@ -1,14 +1,15 @@
 // アカウントの管理シート。Googleアカウント、姓、名、フォルダIDが記入されたもの
-const accountSheet = SpreadsheetApp.openById("12Zu78RCyQjeonIjL8s-1mh9qkQ16S2TbAn90KnTWPaU");
+const accountSheet = SpreadsheetApp.openById("1Sbq8BUCsVxUZUffw8lroQWq4VOAHdo37CiM9Z5Y-AzM");
+const sheetName = "account_list";
 
 // フォームの回答を転記するためのGoogle Documentのテンプレート
-const formTemplate = DocumentApp.openById("1nJEjK2hJQOJtJt1K5omOu9nGC3YEPjIJW2gLfSEFfek")
+const formTemplate = DocumentApp.openById("1_re4wObJ7EsyJqk0K-U3Ayir5xAz7FUW4NxIp0aWmjM")
 
 // 個人フォルダを管理するためのルートディレクトリ
-const rootDirectory = DriveApp.getFolderById("1JQLK9JN57ArbwYJ-6QuZIaLhyh-VZfCr");
+const rootDirectory = DriveApp.getFolderById("1GBSExxF64luV5iH-rd-IQvhJn1neStQs");
 
 // 出張者が実際に記入する提出フォーム
-const form = FormApp.openById("1bLWDwBmFI46fB-7OET641sIpCMBlsIm4keCvIE6Sa2U");
+const form = FormApp.openById("1-8D5xbRiqsor2fFGePP225po9RmFe0kc0M_pLl4Q7OU");
 
 function getLatestResponse() {
   // フォームの回答を全て取得する
@@ -36,7 +37,7 @@ function getLatestResponse() {
 
 function findPerson(account){
   // アカウント管理シートのデータを取得する
-  let sheet = accountSheet.getSheetByName("シート1");
+  let sheet = accountSheet.getSheetByName(sheetName);
 
   // スプレッドシートのデータ範囲を取得する
   let range = sheet.getDataRange().getValues();
@@ -111,6 +112,33 @@ function replaceByResponse(docId, responses){
       case "業務内容": 
         body.replaceText('{results}', entry); 
         break;
+      case "添付資料":
+        let attachmentList = {};    // 添付資料のファイル名をキーとするURLの連想配列
+        let attachmentText = "";    // テンプレートを置き換えるためのテキスト用の変数
+        let count = 1;              // 添付資料の番号を入れるためのカウンター
+
+        for(let attachmentId of entry){
+          // アップロードされた添付ファイルのドキュメントIDを取得する
+          let attachment = DriveApp.getFileById(attachmentId);
+
+          let attachmentName = attachment.getName();     // アップロードされたドキュメントの名前
+          let attachmentUrl = attachment.getUrl();       // アップロードされたドキュメントのURL
+
+          // 連想配列にファイル名をキー、URLを値として入れておく
+          attachmentList[attachmentName] = attachmentUrl;
+
+          // テンプレートに流し込むためのテキストを生成させておく
+          attachmentText = attachmentText + "・添付資料" + count + "：\t" + attachmentName +"\n" 
+
+          // カウンターの値をインクリメントして更新する
+          count += 1;
+        }
+        // テンプレートの文字列をアップロードされた添付ファイル名で置き換える
+        body.replaceText('{attachments}', attachmentText);
+
+        // 添付ファイル名をリンク付きのテキストに変換する
+        insertUrlLink(body, attachmentList)
+        break;
     };
   };
   // 日付型の出発日と帰着日を使って出張期間を計算する
@@ -121,4 +149,31 @@ function replaceByResponse(docId, responses){
   body.replaceText('{days}', duration); 
 
   return(docId);
+};
+
+function insertUrlLink(body, linkList){
+  // 引数として与えられたリンクリストからキーとなるファイル名のリストを取り出す
+  let keys = Object.keys(linkList);
+
+  for(let key of keys){
+    let search = key;         // 取り出したファイル名を検索文字列に指定する
+    let link = linkList[key]  // 値として格納されているURLを取り出す
+
+    // テキスト文字列から段落（パラグラフ）を取り出す
+    let paragraphs = body.getParagraphs();
+
+    for(let paragraph of paragraphs){
+      let text = paragraph.getText();   // 取り出した段落の文字列だけを抽出する
+      let match = text.match(search);   // 取り出した段落からテキストの一致部分を検索する
+
+      // 一致する段落とテキストが見つかった場合、リンクを挿入する
+      if(match){
+        let index = match.index        // 検索文字列の最初の位置文字目の位置を取得する
+        let linkLen = search.length - 1 // 検索文字列の長さを取得する
+
+        //リンク付きにする
+        paragraph.editAsText().setLinkUrl(index, index + linkLen, link)
+      };
+    };
+  };
 };
