@@ -18,7 +18,7 @@
     - [Google Spreadsheet のアカウントシート](https://docs.google.com/spreadsheets/d/12Zu78RCyQjeonIjL8s-1mh9qkQ16S2TbAn90KnTWPaU/edit?usp=drive_link)
 
 ## Google Spreadsheet のための Google App Scripts
-+ ### [Google Spreadsheet に入力された場所名から緯度経度を取得する](form/getAllResponses.js)
++ ### [Google Spreadsheet に入力された場所名から緯度経度を取得する](spreadsheet/geocoding.js)
 
     - [Google Spreadsheet のサンプルシート](https://docs.google.com/spreadsheets/d/1tsrsAgiaHtalxcuTxeoY0E3JkmFhePIcn8bSDJUfoBY/edit?usp=sharing)
     
