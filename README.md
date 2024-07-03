@@ -1,8 +1,15 @@
+## カレンダーのための Google App Scripts
++ ### [曜日の取得](general/getDayName.js)
++ ### [イベントの取得](general/hasEvents.js)
++ ### [祝日の確認](general/isHoliday.js)
++ ### [土日の確認](general/isWeekend.js)
++ ### [西暦を和暦に変換](general/seirekiToWareki.js)
+
 ## Google Form のための Google App Scripts
-+ ### [Google Form の全ての回答を取得する](https://github.com/tajima-rd/GAS/blob/main/form/getAllResponses.js)
-+ ### [Google Form の最後の回答を取得する](https://github.com/tajima-rd/GAS/blob/main/form/getLatestResponse.js)
-+ ### [Google Form の回答後にメッセージを送信する](https://github.com/tajima-rd/GAS/blob/main/form/notifyByEmail.js)
-+ ### [Google Form の回答結果を Google Document の個票に展開する](https://github.com/tajima-rd/GAS/blob/main/form/createDocumentByForm.js)
++ ### [Google Form の全ての回答を取得する](form/getAllResponses.js)
++ ### [Google Form の最後の回答を取得する](form/getLatestResponse.js)
++ ### [Google Form の回答後にメッセージを送信する](form/notifyByEmail.js)
++ ### [Google Form の回答結果を Google Document の個票に展開する](form/createDocumentByForm.js)
 
   このサンプルスクリプトでは、Google Form で得られた回答を Google Document の個票に展開します。このスクリプトでは Form からの回答を受け付けた際に、
   回答者のメールアドレスからアカウントシートに記載された個人フォルダIDし、その個人フォルダ内に Google Document のテンプレートをコピーした後にキーワードを置き換えます。
