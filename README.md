@@ -1,4 +1,4 @@
-## カレンダーのための Google App Scripts
+## Google カレンダー のための Google App Scripts
 + ### [曜日の取得](general/getDayName.js)
 + ### [イベントの取得](general/hasEvents.js)
 + ### [祝日の確認](general/isHoliday.js)
