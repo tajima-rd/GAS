@@ -26,6 +26,11 @@
 
 ## Google Spreadsheet のための Google App Scripts
 + ### [Google Group と組み合わせて Formの未回答者に対する処理を記述する](spreadsheet/notifyToNonRespondents.js)
+  
+  このスクリプトではGoogle Groupに登録されたメールアドレスとSpreadsheet上に自動記録されたメールアドレスの差分を取って処理をします。
+  そのため、Google Groupのメールアドレスがエイリアス（別名）によって登録されていた場合、すでに回答しているにも関わらず、未回答として扱われる可能性があります。
+  Google Groupを使ってグループを作成する際には、エイリアスではなく「アカウント」を用いるようにしましょう。
+
 + ### [Google Spreadsheet に入力された場所名から緯度経度を取得する](spreadsheet/geocoding.js)
 
     - [Google Spreadsheet のサンプルシート](https://docs.google.com/spreadsheets/d/1tsrsAgiaHtalxcuTxeoY0E3JkmFhePIcn8bSDJUfoBY/edit?usp=sharing)
