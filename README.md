@@ -35,3 +35,7 @@
 
     - [Google Spreadsheet のサンプルシート](https://docs.google.com/spreadsheets/d/1tsrsAgiaHtalxcuTxeoY0E3JkmFhePIcn8bSDJUfoBY/edit?usp=sharing)
     
++ ### [Google AI Studio と組み合わせて生成AIを利用した関数を作成する](spreadsheet/callGeminiAPI.js)
+  
+  このスクリプトではGoogle AI Studio の API を使って、生成AIを利用した関数を作成します。
+  事前にGoogle AI Studio でAPIキーを取得する必要があります。
