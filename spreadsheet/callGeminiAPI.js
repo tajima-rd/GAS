@@ -17,30 +17,56 @@ const apiKey = "YOUR_GOOGLE_GEMINI_API_KEY";  // ここにAPIキーを入力
  * @param {string} item Geminiに説明してほしい事柄（例: "光合成"）。
  * @returns {string} Geminiによって生成された説明文。失敗した場合はエラーメッセージを返す。
  */
-function askToGemini(item) {
-  // 生成AIのパラメータを設定する。
-  const tempera = 0.5;   // 生成されるテキストの多様性を調整 (0.0〜1.0)
-  const top_p = 0.95;     // トークン選択の範囲を調整 (0.0〜1.0)
-  const max_token = 400; // 生成されるテキストの最大長
+function askGemini(item) {
+ // itemが空、またはスペースのみの場合は処理を中断
+ if (!item || item.toString().trim() === "") {
+   return "入力がありません";
+ }
 
-  // 引数 `item` を使って、Geminiに投げるためのプロンプト（指示文）を生成する。
-  // テンプレートリテラル (`) を使うことで、文字列内に変数を埋め込みやすくなっている。
-  const question = `
-    あなたは、優秀な薬剤師です。薬の説明を誰でも分かるように説明するのが仕事です。
-    ${item}に関する説明を中学生でも分かるように${max_token}字でまとめてください。
-    説明文はスタイルを設定せず、一続きの文章としてください。
-  `;
+ // キャッシュ機能の実装
+ const cache = CacheService.getScriptCache();
+ // 入力値からユニークなキャッシュキーを生成
+ const cacheKey = "gemini_desc_" + item.toString().trim();
 
-  // 準備したプロンプトと設定値を引数にして、実際にAPIを呼び出す関数 `callGeminiAPI` を実行する。
-  // tempera, top_p, max_token は、この関数の外で定義されているグローバル変数を想定している。
-  const result = callGeminiAPI(question, tempera, top_p, max_token);
+ // 1. まずキャッシュにデータがあるか確認する
+ const cachedResult = cache.get(cacheKey);
+ if (cachedResult != null) {
+   Logger.log("キャッシュから結果を返しました: " + item);
+   // あればAPIを呼ばずにキャッシュした値を返す
+   return cachedResult;
+ }
 
-  // 処理の出力結果をGoogle Apps Scriptのログとして出力する。
-  // [実行ログ]から確認でき、デバッグに役立つ。
-  Logger.log(result);
+ // 生成AIのパラメータを設定する。
+ const tempera = 0.5;   // 生成されるテキストの多様性を調整 (0.0〜1.0)
+ const top_p = 0.95;     // トークン選択の範囲を調整 (0.0〜1.0)
+ const max_token = 400; // 生成されるテキストの最大長
 
-  // APIから受け取った処理結果（説明文）を、この関数の戻り値として返す。
-  return result;
+ // 引数 `item` を使って、Geminiに投げるためのプロンプト（指示文）を生成する。
+ // テンプレートリテラル (`) を使うことで、文字列内に変数を埋め込みやすくなっている。
+ const question = `
+   あなたは、優秀な薬剤師です。薬の説明を誰でも分かるように説明するのが仕事です。
+   ${item}に関する説明を中学生でも分かるように${max_token}字でまとめてください。
+   説明文はスタイルを設定せず、一続きの文章としてください。
+ `;
+
+ // キャッシュがなければ、実際にAPIを呼び出す
+ // 準備したプロンプトと設定値を引数にして、実際にAPIを呼び出す関数 `callGeminiAPI` を実行する。
+ // tempera, top_p, max_token は、この関数の外で定義されているグローバル変数を想定している。
+ Logger.log("APIにリクエストを送信します: " + item);
+ const result = callGeminiAPI(question, tempera, top_p, max_token);
+
+ // APIから正常な応答が得られた場合、結果をキャッシュに保存する
+ if (result !== "解説の生成に失敗しました。") {
+   // キャッシュに結果を保存 (有効期限: 21600秒 = 6時間)
+   cache.put(cacheKey, result, 21600);
+ }
+
+ // 処理の出力結果をGoogle Apps Scriptのログとして出力する。
+ // [実行ログ]から確認でき、デバッグに役立つ。
+ Logger.log(result);
+
+ // APIから受け取った処理結果（説明文）を、この関数の戻り値として返す。
+ return result;
 }
 
 /**
