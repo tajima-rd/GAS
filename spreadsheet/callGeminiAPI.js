@@ -80,7 +80,7 @@ function askGemini(item) {
 function callGeminiAPI(prompt, tempera, top_p, max_token) {
   // Gemini APIのエンドポイントURLを定義する。
   // `apiKey` はスクリプトのプロパティやグローバル変数として事前に設定しておく必要がある。
-  const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
+  const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
 
   // APIに送信するリクエストの本体（ペイロード）をオブジェクトとして定義する。
   const payload = {
